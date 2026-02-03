@@ -142,8 +142,8 @@ const MedicineReminder = () => {
                                     💊
                                 </div>
                                 <div>
-                                    <h3 className="font-bold text-white text-lg">{reminder.name}</h3>
-                                    <p className="text-slate-400 text-sm">{reminder.dosage} • {reminder.days.join(', ')}</p>
+                                    <h3 className="font-bold text-white text-lg">{reminder.medicineName || reminder.name}</h3>
+                                    <p className="text-slate-400 text-sm">{reminder.dosage} • {reminder.frequency || (reminder.days && reminder.days.join(', ')) || 'Daily'}</p>
                                 </div>
                             </div>
                             <div className="text-right">

@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
+import ReactMarkdown from 'react-markdown';
 
 const Chatbot = () => {
     const [messages, setMessages] = useState([
@@ -59,7 +60,26 @@ const Chatbot = () => {
                             ? 'bg-blue-600 text-white rounded-br-none'
                             : 'bg-slate-800 text-slate-200 rounded-bl-none border border-slate-700'
                             }`}>
-                            {msg.text}
+                            {msg.sender === 'user' ? (
+                                msg.text
+                            ) : (
+                                <div className="prose prose-invert prose-sm max-w-none text-slate-200">
+                                    <ReactMarkdown
+                                        components={{
+                                            ul: ({ node, ...props }) => <ul className="list-disc pl-4 mt-2 mb-2 space-y-1" {...props} />,
+                                            ol: ({ node, ...props }) => <ol className="list-decimal pl-4 mt-2 mb-2 space-y-1" {...props} />,
+                                            strong: ({ node, ...props }) => <span className="font-bold text-white" {...props} />,
+                                            p: ({ node, ...props }) => <p className="mb-2 last:mb-0" {...props} />,
+                                            h1: ({ node, ...props }) => <h1 className="text-lg font-bold text-white mb-2" {...props} />,
+                                            h2: ({ node, ...props }) => <h2 className="text-base font-bold text-white mb-2" {...props} />,
+                                            h3: ({ node, ...props }) => <h3 className="text-sm font-bold text-white mb-1" {...props} />,
+                                            code: ({ node, ...props }) => <code className="bg-slate-900 rounded px-1 py-0.5 text-sm font-mono text-blue-300" {...props} />
+                                        }}
+                                    >
+                                        {msg.text}
+                                    </ReactMarkdown>
+                                </div>
+                            )}
                         </div>
                     </div>
                 ))}

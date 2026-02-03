@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import api from '../services/api';
+import api, { addReminder } from '../services/api';
 
 const PrescriptionReader = () => {
     const [file, setFile] = useState(null);
@@ -10,6 +10,22 @@ const PrescriptionReader = () => {
     const handleFileChange = (e) => {
         if (e.target.files[0]) {
             setFile(e.target.files[0]);
+        }
+    };
+
+    const handleAddReminder = async (med) => {
+        try {
+            await addReminder({
+                medicineName: med.name,
+                dosage: med.dosage,
+                frequency: med.frequency,
+                time: "09:00", // Default time as prescriptions don't usually have it
+                instructions: med.instructions || med.description
+            });
+            alert(`✅ Added ${med.name} to your reminders!`);
+        } catch (err) {
+            console.error(err);
+            alert('❌ Failed to add reminder. Please try again.');
         }
     };
 
@@ -27,7 +43,7 @@ const PrescriptionReader = () => {
 
             // Use direct axios call or update api.js to handle multipart/form-data
             // Here we use the api instance but need to set content type
-            const response = await api.post('/ai/extract_prescription', formData, {
+            const response = await api.post('/ai/prescription', formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data'
                 }
@@ -99,23 +115,32 @@ const PrescriptionReader = () => {
                                     <span className="text-slate-500 text-sm">Medicines Detected</span>
                                     {result.medicines_detected && result.medicines_detected.length > 0 ? (
                                         result.medicines_detected.map((med, i) => (
-                                            <div key={i} className="flex justify-between items-center p-3 bg-slate-800 rounded-lg">
-                                                <div>
-                                                    <p className="text-white font-bold">{med.name} <span className="text-blue-400 text-sm">({med.dosage})</span></p>
-                                                    <p className="text-slate-400 text-sm">{med.frequency} • {med.days}</p>
+                                            <div key={i} className="flex flex-col p-4 bg-slate-800 rounded-lg gap-2">
+                                                <div className="flex justify-between items-start">
+                                                    <div>
+                                                        <p className="text-white font-bold text-lg">{med.name} <span className="text-blue-400 text-sm">({med.dosage})</span></p>
+                                                        <p className="text-slate-400 text-sm">{med.frequency} • {med.days}</p>
+                                                    </div>
+                                                    <button
+                                                        onClick={() => handleAddReminder(med)}
+                                                        className="text-xs bg-blue-600 hover:bg-blue-700 text-white px-3 py-1.5 rounded transition-colors flex items-center gap-1"
+                                                    >
+                                                        <span>⏰</span> Add Reminder
+                                                    </button>
                                                 </div>
-                                                <div className="text-xs text-slate-500 bg-slate-900 px-2 py-1 rounded">
+                                                <div className="text-xs text-slate-500 bg-slate-900 px-2 py-1 rounded w-fit">
                                                     {med.instructions}
                                                 </div>
+                                                {med.description && (
+                                                    <div className="mt-1 pt-2 border-t border-slate-700">
+                                                        <p className="text-slate-300 text-sm italic">"{med.description}"</p>
+                                                    </div>
+                                                )}
                                             </div>
                                         ))
                                     ) : (
                                         <p className="text-slate-400">No medicines detected.</p>
                                     )}
-                                    <div className="mt-4">
-                                        <span className="text-slate-500 text-sm">Raw Text</span>
-                                        <p className="text-slate-300 text-xs mt-1 whitespace-pre-wrap">{result.raw_text}</p>
-                                    </div>
                                 </div>
                             </div>
                         </div>

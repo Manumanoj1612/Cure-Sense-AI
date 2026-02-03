@@ -33,9 +33,26 @@ export const register = async (name, email, password) => {
     return response.data;
 };
 
-export const predictDisease = async (symptoms) => {
-    // Call backend which proxies to AI service
-    const response = await api.post('/ai/predict', { symptoms });
+// Prescription endpoint update
+export const extractPrescription = async (formData) => {
+    // Assuming formData contains 'file'
+    const response = await api.post('/ai/prescription', formData, {
+        headers: { 'Content-Type': 'multipart/form-data' }
+    });
+    return response.data;
+};
+
+// Update to match new backend contract
+export const predictDisease = async (symptoms, age = 25, duration = "1 day", severity = "moderate") => {
+    // Backend expects: { symptoms: [], age, duration, severity }
+    // Frontend passes string "symptoms", convert to array if needed or handle
+    const symptomsList = typeof symptoms === 'string' ? symptoms.split(',') : symptoms;
+    const response = await api.post('/ai/symptom-check', {
+        symptoms: symptomsList,
+        age,
+        duration,
+        severity
+    });
     return response.data;
 };
 

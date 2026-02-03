@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { getReminders } from '../services/api';
 import SymptomChecker from '../components/SymptomChecker';
 import PrescriptionReader from '../components/PrescriptionReader';
 import MedicineReminder from '../components/MedicineReminder';
@@ -8,6 +9,19 @@ import Profile from '../components/Profile';
 
 const Dashboard = () => {
     const [activeTab, setActiveTab] = useState('overview');
+    const [reminderCount, setReminderCount] = useState(0);
+
+    useEffect(() => {
+        const fetchStats = async () => {
+            try {
+                const reminders = await getReminders();
+                setReminderCount(reminders.length);
+            } catch (err) {
+                console.error("Failed to fetch dashboard stats", err);
+            }
+        };
+        fetchStats();
+    }, []);
 
     const tools = [
         { id: 'profile', name: 'My Profile', icon: '👤', color: 'bg-indigo-500' },
@@ -44,15 +58,7 @@ const Dashboard = () => {
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
                             <div className="bg-slate-800 p-6 rounded-xl border border-slate-700">
                                 <h3 className="text-slate-400 text-sm font-medium mb-2">Upcoming Reminders</h3>
-                                <p className="text-3xl font-bold text-white">2</p>
-                            </div>
-                            <div className="bg-slate-800 p-6 rounded-xl border border-slate-700">
-                                <h3 className="text-slate-400 text-sm font-medium mb-2">Health Score</h3>
-                                <p className="text-3xl font-bold text-green-400">85%</p>
-                            </div>
-                            <div className="bg-slate-800 p-6 rounded-xl border border-slate-700">
-                                <h3 className="text-slate-400 text-sm font-medium mb-2">Active Prescriptions</h3>
-                                <p className="text-3xl font-bold text-blue-400">1</p>
+                                <p className="text-3xl font-bold text-white">{reminderCount}</p>
                             </div>
                         </div>
 

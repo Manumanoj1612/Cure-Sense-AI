@@ -1,14 +1,9 @@
-fastapi
-uvicorn
-python-multipart
-requests
-scikit-learn
-pandas
-numpy
-transformers
-torch
+flask
+flask-cors
+python-dotenv
+google-generativeai
+easyocr
 pillow
-opencv-python
-pytesseract
-spacy
-joblib
+numpy
+# opencv-python-headless is usually needed for easyocr if no GUI
+opencv-python-headless

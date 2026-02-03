@@ -4,28 +4,31 @@ const reminderSchema = new mongoose.Schema({
     user: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User',
-        required: true,
+        required: true
     },
-    name: {
+    medicineName: {
         type: String,
-        required: true,
+        required: true
     },
     dosage: {
         type: String,
-        required: true,
+        required: true
+    },
+    frequency: {
+        type: String, // e.g., "Twice a day"
+        required: true
     },
     time: {
-        type: String,
-        required: true,
+        type: String, // Store as string for flexibility? Or array of strings. Let's keep it simple string or array.
+        // The frontend might send "8:00 AM" or similar.
     },
-    days: {
-        type: [String],
-        default: ['Daily'],
+    instructions: {
+        type: String // e.g., "After food"
     },
     createdAt: {
         type: Date,
-        default: Date.now,
-    },
+        default: Date.now
+    }
 });
 
 module.exports = mongoose.model('Reminder', reminderSchema);
