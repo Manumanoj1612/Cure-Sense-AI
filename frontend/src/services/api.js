@@ -93,10 +93,15 @@ export const deleteReminder = async (id) => {
 export const getDoctors = async (location, specialty, symptoms) => {
     const params = new URLSearchParams();
     if (location) params.append('location', location);
-    if (specialty) params.append('specialty', specialty);
+    if (specialty && specialty !== 'All') params.append('specialty', specialty);
     if (symptoms) params.append('symptoms', symptoms);
 
     const response = await api.get(`/doctors?${params.toString()}`);
+    return response.data;
+};
+
+export const contactDoctor = async (data) => {
+    const response = await api.post('/contact-doctor', data);
     return response.data;
 };
 

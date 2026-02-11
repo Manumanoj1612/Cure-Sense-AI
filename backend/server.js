@@ -8,6 +8,9 @@ dotenv.config();
 
 const app = express();
 
+// Start Scheduler
+startScheduler();
+
 // Middleware
 app.use(express.json());
 app.use(cors());
@@ -19,9 +22,11 @@ connectDB();
 app.use('/api/auth', require('./routes/auth'));
 app.use('/api/reminders', require('./routes/reminders'));
 app.use('/api/ai', require('./routes/ai'));
+app.use('/api/doctors', require('./routes/doctors'));
+app.use('/api/contact-doctor', require('./routes/contact'));
 
 app.get('/', (req, res) => {
-    res.send('MedBuddy API is running...');
+    res.send('CureSenseAI API is running...');
 });
 
 const PORT = process.env.PORT || 5000;
